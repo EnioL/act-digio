@@ -1,5 +1,6 @@
 package com.act.digio.controller;
 
+import com.act.digio.dto.RecomendacaoClienteDTO;
 import com.act.digio.dto.TopClienteDTO;
 import com.act.digio.dto.CompraDTO;
 import com.act.digio.service.ProdutoService;
@@ -56,6 +57,18 @@ public class RelatorioControler {
         }catch (Exception e) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("Relatorio",
                     e.getMessage(),
+                    "Algo deu errado, tente novamente mais tarde.")).body(null);
+        }
+    }
+
+    @RequestMapping(value="/recomendacao/cliente/tipo", method = RequestMethod.GET)
+    public ResponseEntity<List<RecomendacaoClienteDTO>> getRecomedacao(){
+        try{
+            List<RecomendacaoClienteDTO> recomendacoes = vendaService.getRecomedacao();
+            return new ResponseEntity<>(recomendacoes, HttpStatus.OK);
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("Relatorio",
+                    e.getCause().getMessage(),
                     "Algo deu errado, tente novamente mais tarde.")).body(null);
         }
     }
