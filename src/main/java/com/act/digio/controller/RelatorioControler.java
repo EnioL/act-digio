@@ -1,5 +1,6 @@
 package com.act.digio.controller;
 
+import com.act.digio.dto.CompraDTO;
 import com.act.digio.dto.VendaDTO;
 import com.act.digio.service.ProdutoService;
 import com.act.digio.service.VendaService;
@@ -23,9 +24,9 @@ public class RelatorioControler {
     private VendaService vendaService;
 
     @RequestMapping(value="/compras", method = RequestMethod.GET)
-    public ResponseEntity<List<VendaDTO>>  getCompras(){
+    public ResponseEntity<List<CompraDTO>>  getCompras(){
         try{
-            List<VendaDTO> compras = vendaService.getCompras();
+            List<CompraDTO> compras = vendaService.getCompras();
             return new ResponseEntity<>(compras, HttpStatus.OK);
         }catch (Exception e) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("Relatorio",

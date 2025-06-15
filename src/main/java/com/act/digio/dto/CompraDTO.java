@@ -8,6 +8,8 @@ import lombok.Setter;
 @Setter
 @Getter
 public class CompraDTO {
+    private String nome;
+    private String cpf;
     private String codigo;
     private String tipoVinho;
     private Double preco;
