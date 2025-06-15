@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public class VendaRepository {
 
-    public List<Venda> getCompras() {
+    public List<Venda> getVendas() {
         try {
             ObjectMapper mapper = new ObjectMapper();
             File file = new File("src/main/java/com/act/digio/dados/compras");

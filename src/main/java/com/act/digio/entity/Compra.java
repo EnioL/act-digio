@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class Compra {
     private String codigo;
-    private String quantidade;
+    private Integer quantidade;
 }

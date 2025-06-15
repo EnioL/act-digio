@@ -17,7 +17,7 @@ public class ProdutoRepository {
     public List<Produto> getProdutos() {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            File file = new File("com/act/digio/dados/produtos");
+            File file = new File("src/main/java/com/act/digio/dados/produtos");
 
             List<Produto> produtos = mapper.readValue(file, new TypeReference<>() {});
 
