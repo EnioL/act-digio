@@ -13,7 +13,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class ServiceUtil {
-
+    /**
+     *  Faz um join entre duas listas de Produtos e Vendas
+     * */
     public List<CompraDTO> joinVendasProdutos(List<Venda> vendas, Map<String, Produto> produtosMapByCodigo){
         List<CompraDTO> comprasDTOS = new ArrayList<>();
 

@@ -21,11 +21,7 @@ public class ProdutoRepository {
         try {
             ObjectMapper mapper = new ObjectMapper();
             File file = new File("src/main/java/com/act/digio/dados/produtos");
-
-            List<Produto> produtos = mapper.readValue(file, new TypeReference<>() {});
-
-            return produtos;
-
+            return mapper.readValue(file, new TypeReference<>() {});
         } catch (IOException e) {
             e.printStackTrace();
             return null;

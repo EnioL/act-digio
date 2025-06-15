@@ -17,10 +17,7 @@ public class VendaRepository {
             ObjectMapper mapper = new ObjectMapper();
             File file = new File("src/main/java/com/act/digio/dados/compras");
 
-            List<Venda> vendas = mapper.readValue(file, new TypeReference<>() {});
-
-            return vendas;
-
+            return mapper.readValue(file, new TypeReference<>() {});
         } catch (IOException e) {
             e.printStackTrace();
             return null;

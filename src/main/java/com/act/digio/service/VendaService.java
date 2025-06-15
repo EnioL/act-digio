@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,11 +39,13 @@ public class VendaService {
     }
 
     public List<TopClienteDTO> getClientesFies(){
+        // Agrupar as compras por nome do cliente
         Map<String, List<CompraDTO>> comprasGroupingByNome = getCompras().stream()
                 .collect(Collectors.groupingBy(CompraDTO::getNome));
 
         return comprasGroupingByNome.entrySet().stream().map(
                 entry -> {
+                    // Soma todos os gastos do cliente
                     List<CompraDTO> compraDTOS = entry.getValue();
                     Double somatorio = compraDTOS.stream().mapToDouble(CompraDTO::getValorTotal).sum();
 
