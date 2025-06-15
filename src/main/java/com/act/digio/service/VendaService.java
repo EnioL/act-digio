@@ -1,5 +1,6 @@
 package com.act.digio.service;
 
+import com.act.digio.dto.TopClienteDTO;
 import com.act.digio.dto.CompraDTO;
 import com.act.digio.entity.Compra;
 import com.act.digio.entity.Produto;
@@ -27,17 +28,33 @@ public class VendaService {
     }
 
     public List<CompraDTO> getCompras(){
-        List<CompraDTO> comprasDTOS = joinProdutos(produtoService.getMapByCodigo());
+        List<CompraDTO> comprasDTOS = joinVendasProdutos(produtoService.getMapByCodigo());
         return comprasDTOS.stream().sorted(Comparator.comparing(CompraDTO::getValorTotal)).collect(Collectors.toList());
     }
 
     public CompraDTO getMaiorCompra(Integer anoCompra){
-        List<CompraDTO> comprasDTOS = joinProdutos(produtoService.getMapByCodigoAndFilterByAnoCompra(anoCompra));
+        List<CompraDTO> comprasDTOS = joinVendasProdutos(produtoService.getMapByCodigoAndFilterByAnoCompra(anoCompra));
         return comprasDTOS.stream().max(Comparator.comparing(CompraDTO::getValorTotal)).orElse(null);
     }
 
+    public List<TopClienteDTO> getClientesFies(){
+        Map<String, List<CompraDTO>> comprasGroupingByNome = getCompras().stream()
+                .collect(Collectors.groupingBy(CompraDTO::getNome));
 
-    public List<CompraDTO> joinProdutos(Map<String, Produto> produtosMapByCodigo){
+        return comprasGroupingByNome.entrySet().stream().map(
+                entry -> {
+                    List<CompraDTO> compraDTOS = entry.getValue();
+                    Double somatorio = compraDTOS.stream().mapToDouble(CompraDTO::getValorTotal).sum();
+
+                    return new TopClienteDTO(entry.getKey(), somatorio);
+                }
+        ).sorted(Comparator.comparing(TopClienteDTO::getGastoTotal).reversed())
+        .limit(3)
+        .toList();
+    }
+
+
+    public List<CompraDTO> joinVendasProdutos(Map<String, Produto> produtosMapByCodigo){
         List<CompraDTO> comprasDTOS = new ArrayList<>();
 
         getVendas().forEach(venda -> comprasDTOS.addAll(

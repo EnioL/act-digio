@@ -1,7 +1,7 @@
 package com.act.digio.controller;
 
+import com.act.digio.dto.TopClienteDTO;
 import com.act.digio.dto.CompraDTO;
-import com.act.digio.dto.VendaDTO;
 import com.act.digio.service.ProdutoService;
 import com.act.digio.service.VendaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class RelatorioControler {
         }
     }
 
-    @RequestMapping(value="/maior_compra/{anoCompra}", method = RequestMethod.GET)
+    @RequestMapping(value="/maior-compra/{anoCompra}", method = RequestMethod.GET)
     public ResponseEntity<CompraDTO> getMaiorCompra(@PathVariable Integer anoCompra){
         try{
             CompraDTO compras = vendaService.getMaiorCompra(anoCompra);
@@ -44,6 +44,18 @@ public class RelatorioControler {
         }catch (Exception e) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("Relatorio",
                     e.getCause().getMessage(),
+                    "Algo deu errado, tente novamente mais tarde.")).body(null);
+        }
+    }
+
+    @RequestMapping(value="/clientes-fies", method = RequestMethod.GET)
+    public ResponseEntity<List<TopClienteDTO>>  getClientesFies(){
+        try{
+            List<TopClienteDTO> compras = vendaService.getClientesFies();
+            return new ResponseEntity<>(compras, HttpStatus.OK);
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("Relatorio",
+                    e.getMessage(),
                     "Algo deu errado, tente novamente mais tarde.")).body(null);
         }
     }
