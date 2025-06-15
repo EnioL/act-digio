@@ -8,9 +8,7 @@ import com.act.digio.repository.VendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -73,13 +71,16 @@ public class VendaService {
                             ));
 
                     // Encontrar o vinho com maior quantidade comprada
-                    String vinhoFavorito = quantidadePorVinho.entrySet().stream()
+                    Map<String, Integer> vinhoFavorito = quantidadePorVinho.entrySet().stream()
                             .max(Map.Entry.comparingByValue())
-                            .map(Map.Entry::getKey)
-                            .orElse("");
+                            .map(result -> Map.of(result.getKey(), result.getValue()))
+                            .orElse(Collections.emptyMap());
 
-                    return new RecomendacaoClienteDTO(nomeCliente, vinhoFavorito);
+                    String tipoVinho =  vinhoFavorito.keySet().stream().findFirst().orElse(null);
+                    Integer quantidade = vinhoFavorito.get(tipoVinho);
+                    return new RecomendacaoClienteDTO(nomeCliente, tipoVinho, quantidade);
                 })
+                .sorted(Comparator.comparing(RecomendacaoClienteDTO::getNome))
                 .collect(Collectors.toList());
     }
 

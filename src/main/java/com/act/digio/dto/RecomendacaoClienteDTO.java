@@ -11,4 +11,5 @@ import lombok.Setter;
 public class RecomendacaoClienteDTO {
     private String nome;
     private String recomendacao;
+    private Integer quantidadeComprada;
 }
