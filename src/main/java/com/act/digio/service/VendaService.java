@@ -27,34 +27,44 @@ public class VendaService {
     }
 
     public List<CompraDTO> getCompras(){
+        List<CompraDTO> comprasDTOS = joinProdutos(produtoService.getMapByCodigo());
+        return comprasDTOS.stream().sorted(Comparator.comparing(CompraDTO::getValorTotal)).collect(Collectors.toList());
+    }
+
+    public CompraDTO getMaiorCompra(Integer anoCompra){
+        List<CompraDTO> comprasDTOS = joinProdutos(produtoService.getMapByCodigoAndFilterByAnoCompra(anoCompra));
+        return comprasDTOS.stream().max(Comparator.comparing(CompraDTO::getValorTotal)).orElse(null);
+    }
+
+
+    public List<CompraDTO> joinProdutos(Map<String, Produto> produtosMapByCodigo){
         List<CompraDTO> comprasDTOS = new ArrayList<>();
 
-        Map<String, Produto> produtosByCodigo = produtoService.getProdutosByCodigo();
-        List<Venda> vendas = getVendas();
-
-        vendas.forEach(venda -> comprasDTOS.addAll(
+        getVendas().forEach(venda -> comprasDTOS.addAll(
                 getComprasDTO(
                         venda.getNome(),
                         venda.getCpf(),
                         venda.getCompras(),
-                        produtosByCodigo)
+                        produtosMapByCodigo)
                 )
         );
 
-        return comprasDTOS.stream().sorted(Comparator.comparing(CompraDTO::getValorTotal)).collect(Collectors.toList());
+        return comprasDTOS;
     }
 
-    private List<CompraDTO> getComprasDTO(String nome, String cpf, List<Compra> compras, Map<String, Produto> produtosByCodigo){
-        return compras.stream().map(compra -> new CompraDTO(
+    private List<CompraDTO> getComprasDTO(String nome, String cpf, List<Compra> compras, Map<String, Produto> produtosMapByCodigo){
+        return compras.stream()
+                .filter(compra -> produtosMapByCodigo.containsKey(compra.getCodigo()))
+                .map(compra -> new CompraDTO(
                     nome,
                     cpf,
-                    produtosByCodigo.get(compra.getCodigo()).getCodigo(),
-                    produtosByCodigo.get(compra.getCodigo()).getTipoVinho(),
-                    produtosByCodigo.get(compra.getCodigo()).getPreco(),
-                    produtosByCodigo.get(compra.getCodigo()).getSafra(),
-                    produtosByCodigo.get(compra.getCodigo()).getAnoCompra(),
+                    produtosMapByCodigo.get(compra.getCodigo()).getCodigo(),
+                    produtosMapByCodigo.get(compra.getCodigo()).getTipoVinho(),
+                    produtosMapByCodigo.get(compra.getCodigo()).getPreco(),
+                    produtosMapByCodigo.get(compra.getCodigo()).getSafra(),
+                    produtosMapByCodigo.get(compra.getCodigo()).getAnoCompra(),
                     compra.getQuantidade(),
-                    compra.getQuantidade() * produtosByCodigo.get(compra.getCodigo()).getPreco()
+                    compra.getQuantidade() * produtosMapByCodigo.get(compra.getCodigo()).getPreco()
                 ))
                 .collect(Collectors.toList());
 
